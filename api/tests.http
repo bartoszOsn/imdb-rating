@@ -1,0 +1,7 @@
+### GET Search for tv show
+GET http://localhost:3000/search?query=game of thrones
+Accept: application/json
+
+### GET TV show episodes ratings
+GET http://localhost:3000/ratings?imdbId=tt0944947
+Accept: application/json
