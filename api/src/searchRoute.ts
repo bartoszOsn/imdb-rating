@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import { SearchShowResultDTO, TvShowDTO } from '../../shared/SearchShowResultDTO';
-import { createReadStream } from 'fs';
-import * as readline from 'readline';
-import * as path from 'path';
+import { SearchShowResultDTO } from '../../shared/SearchShowResultDTO';
+import { searchTvShow } from './database/searchTvShow';
 
 const router = Router();
 
@@ -14,10 +12,13 @@ router.get('/search', (req, res) => {
 		return;
 	}
 
-	getTitles(query as string)
-		.then((titles) => {
+	searchTvShow(query as string)
+		.then((entities) => {
 			const dto: SearchShowResultDTO = {
-				shows: titles
+				shows: entities.map((entity) => ({
+					id: entity.id,
+					name: entity.title,
+				}))
 			}
 			res.json(dto);
 		})
@@ -28,36 +29,3 @@ router.get('/search', (req, res) => {
 })
 
 export { router as searchRoute };
-
-async function getTitles(query: string): Promise<TvShowDTO[]> {
-	const results: TvShowDTO[] = [];
-	const fileStream = createReadStream(path.resolve(__dirname, '../imdb-dataset/titles.tsv'));
-	const rl = readline.createInterface({
-		input: fileStream,
-		crlfDelay: Infinity
-	});
-
-	let isFirstLine = true;
-
-	for await (const line of rl) {
-		if (isFirstLine) {
-			isFirstLine = false;
-			continue;
-		}
-
-		const [id, type, title, originalTitle] = line.split('\t');
-
-		if (type !== 'tvSeries') {
-			continue;
-		}
-
-		if (title.toLowerCase().includes(query.toLowerCase()) || originalTitle.toLowerCase().includes(query.toLowerCase())) {
-			results.push({
-				id,
-				name: title
-			});
-		}
-	}
-
-	return results;
-}
