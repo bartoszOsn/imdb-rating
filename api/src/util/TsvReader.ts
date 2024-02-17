@@ -39,6 +39,26 @@ export class TsvReader<TColumns extends Array<string>> {
 		rl.close();
 	}
 
+	async *readMultiple(
+		chunkSize: number,
+		filter: (value: Record<TColumns[number], string>) => boolean = () => true
+	): AsyncGenerator<Array<Record<TColumns[number], string>>> {
+		let readValues: Array<Record<TColumns[number], string>> = [];
+
+		for await (const value of this.read()) {
+			if (!filter(value)) {
+				continue;
+			}
+
+			readValues.push(value);
+
+			if (readValues.length === chunkSize) {
+				yield readValues;
+				readValues = [];
+			}
+		}
+	}
+
 	private validateColumns(columnNames: string[]): void {
 		if (columnNames.length !== this.columns.length) {
 			throw new Error('Invalid number of columns');

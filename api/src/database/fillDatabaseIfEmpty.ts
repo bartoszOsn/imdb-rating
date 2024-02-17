@@ -37,16 +37,17 @@ async function fillTvShows(tvShowRepository: Repository<TvShowEntity>): Promise<
 		] as const
 	);
 	
-	for await (const tvShow of tvShowReader.read()) {
-		if (tvShow.titleType !== 'tvSeries') {
-			continue;
-		}
+	for await (const tvShows of tvShowReader.readMultiple(100, tvShow => tvShow.titleType === 'tvSeries')) {
+		const tvShowEntities = tvShows
+			.map(tvShow => {
+				const tvShowEntity = new TvShowEntity();
+				tvShowEntity.id = tvShow.tconst;
+				tvShowEntity.title = tvShow.primaryTitle;
+				tvShowEntity.originalTitle = tvShow.originalTitle;
+				tvShowEntity.episodes = Promise.resolve([]);
+				return tvShowEntity;
+			});
 
-		const tvShowEntity = new TvShowEntity();
-		tvShowEntity.id = tvShow.tconst;
-		tvShowEntity.title = tvShow.primaryTitle;
-		tvShowEntity.originalTitle = tvShow.originalTitle;
-		tvShowEntity.episodes = Promise.resolve([]);
-		await tvShowRepository.save(tvShowEntity);
+		await tvShowRepository.save(tvShowEntities);
 	}
 }
