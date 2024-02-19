@@ -1,13 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { TvShowEntity } from './TvShowEntity';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('episode')
 export class EpisodeEntity {
 	@PrimaryColumn()
 	id!: string;
 
-	@ManyToOne(() => TvShowEntity, tvShow => tvShow.episodes)
-	tvShow!: Promise<TvShowEntity>;
+	@Column()
+	tvShowId!: string;
 
 	@Column()
 	season!: number;
@@ -17,4 +16,7 @@ export class EpisodeEntity {
 
 	@Column()
 	rating!: number;
+
+	@Column()
+	votes!: number;
 }

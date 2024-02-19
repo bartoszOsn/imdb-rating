@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { EpisodeEntity } from './EpisodeEntity';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('tv_shows')
 export class TvShowEntity {
@@ -11,7 +10,4 @@ export class TvShowEntity {
 
 	@Column()
 	originalTitle!: string;
-
-	@OneToMany(() => EpisodeEntity, episode => episode.tvShow)
-	episodes!: Promise<Array<EpisodeEntity>>;
 }
