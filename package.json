@@ -1,0 +1,14 @@
+{
+	"name": "imdb-rating",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "https://github.com/bartoszOsn/imdb-rating.git",
+	"author": "Bartosz Osiński <bartosz.osinski.dev@gmail.com>",
+	"license": "GNU",
+	"scripts": {
+		"serve": "concurrently \"cd api && yarn run dev\" \"cd client && yarn run dev\"",
+		"api:start": "yarn --cwd api dev",
+		"client:build": "",
+		"client:start": ""
+	}
+}
