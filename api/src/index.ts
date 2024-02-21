@@ -6,7 +6,7 @@ import { datasource } from './database/datasource';
 import { fillDatabaseIfEmpty } from './database/fillDatabaseIfEmpty';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT ?? 3000;
 
 app.use(searchRoute);
 app.use(ratingsRoute);
