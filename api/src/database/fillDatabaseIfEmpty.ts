@@ -2,9 +2,10 @@ import { datasource } from './datasource';
 import { TvShowEntity } from './entity/TvShowEntity';
 import { EntityManager, Repository } from 'typeorm';
 import { TsvReader } from '../util/TsvReader';
-import { imdbEpisodesPath, imdbRatingsPath, imdbTitlesPath } from './imdb-datasets';
+import { imdbEpisodesPath, imdbRatingsPath, imdbTitlesPath } from '../datasets/imdb-datasets';
 import { EpisodeEntity } from './entity/EpisodeEntity';
 import { parseNumberOrElse } from '../util/parseNumberOrElse';
+import { resolveDatasets } from '../datasets/resolveDatasets';
 
 const CHUNK_SIZE = 500;
 
@@ -12,6 +13,8 @@ export async function fillDatabaseIfEmpty(): Promise<void> {
 	if (await datasource.manager.count(TvShowEntity) > 0) {
 		return;
 	}
+
+	await resolveDatasets();
 
 	await fillDatabase();
 }
