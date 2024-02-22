@@ -32,6 +32,5 @@ datasource.initialize()
 	.then(() => {
 		app.listen(`${url}:${port}`, () => {
 			console.log(`Server is running at ${url}:${port}`);
-			fillDatabaseIfEmpty().then();
 		});
 	});
