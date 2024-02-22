@@ -8,7 +8,6 @@
 	"scripts": {
 		"serve": "concurrently \"cd api && yarn run dev\" \"cd client && yarn run dev\"",
 		"api:start": "yarn --cwd api dev",
-		"client:build": "",
-		"client:start": ""
+		"client:build": "yarn --cwd client build"
 	}
 }
