@@ -7,7 +7,9 @@
 	"license": "GNU",
 	"scripts": {
 		"serve": "concurrently \"cd api && yarn run dev\" \"cd client && yarn run dev\"",
+		"api:install": "yarn --cwd api install",
 		"api:start": "yarn --cwd api dev",
-		"client:build": "yarn --cwd client build"
+		"client:build": "yarn --cwd client build",
+		"client:install": "yarn --cwd client install"
 	}
 }
