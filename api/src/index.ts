@@ -3,10 +3,11 @@ import express from 'express';
 import { searchRoute } from './searchRoute';
 import { ratingsRoute } from './ratingsRoute';
 import { datasource } from './database/datasource';
-import { fillDatabaseIfEmpty } from './database/fillDatabaseIfEmpty';
+import { fillDatabaseIfEmpty, isDatabaseUpdating } from './database/fillDatabaseIfEmpty';
 
 const app = express();
 const port = process.env.PORT ?? 3000;
+const url = process.env.CLIENT_URL ? '0.0.0.0' : 'http://localhost';
 
 if (process.env.CLIENT_URL) {
 	app.use((_, res, next) => {
@@ -19,10 +20,18 @@ if (process.env.CLIENT_URL) {
 app.use(searchRoute);
 app.use(ratingsRoute);
 
+app.use((_, res, next) => {
+	if (!isDatabaseUpdating()) {
+		next();
+	} else {
+		res.status(503).send('Database is updating');
+	}
+});
+
 datasource.initialize()
-	.then(() => fillDatabaseIfEmpty())
 	.then(() => {
-		app.listen(port, () => {
-			console.log(`Server is running at http://localhost:${port}`);
+		app.listen(`${url}:${port}`, () => {
+			console.log(`Server is running at ${url}:${port}`);
+			fillDatabaseIfEmpty().then();
 		});
 	});

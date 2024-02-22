@@ -9,14 +9,24 @@ import { resolveDatasets } from '../datasets/resolveDatasets';
 
 const CHUNK_SIZE = 500;
 
+let databaseUpdating = false;
+
+export function isDatabaseUpdating(): boolean {
+	return databaseUpdating;
+}
+
 export async function fillDatabaseIfEmpty(): Promise<void> {
 	if (await datasource.manager.count(TvShowEntity) > 0) {
 		return;
 	}
 
+	databaseUpdating = true;
+
 	await resolveDatasets();
 
 	await fillDatabase();
+
+	databaseUpdating = false;
 }
 
 async function fillDatabase(): Promise<void> {
