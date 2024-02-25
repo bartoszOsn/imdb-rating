@@ -6,6 +6,7 @@ import { imdbEpisodesPath, imdbRatingsPath, imdbTitlesPath } from '../datasets/i
 import { EpisodeEntity } from './entity/EpisodeEntity';
 import { parseNumberOrElse } from '../util/parseNumberOrElse';
 import { loggable } from '../util/loggable';
+import { resolveDatasets } from '../datasets/resolveDatasets';
 
 const CHUNK_SIZE = 500;
 
@@ -22,7 +23,7 @@ export const fillDatabaseIfEmpty = loggable('filling database if empty', async f
 
 	databaseUpdating = true;
 
-	// await resolveDatasets();
+	await resolveDatasets();
 
 	await fillDatabase();
 
