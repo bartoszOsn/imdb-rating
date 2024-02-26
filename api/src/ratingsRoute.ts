@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { RatingsDTO, SeasonDTO } from '../../shared/RatingsDTO';
 import { datasource } from './database/datasource';
 import { EpisodeEntity } from './database/entity/EpisodeEntity';
+import { RatingEntity } from './database/entity/RatingEntity';
+import { In } from 'typeorm';
 
 const router = Router();
 
@@ -32,11 +34,26 @@ async function getRatings(imdbId: string): Promise<RatingsDTO> {
 		}
 	});
 
+	const episodeIds = episodeEntities.map(episode => episode.id);
+
+	const ratingEntities = await datasource.getRepository(RatingEntity)
+		.findBy({
+			id: In(episodeIds)
+		});
+
+	const ratingMap = new Map<string, RatingEntity>(
+		ratingEntities.map(rating => [rating.id, rating])
+	);
+
 	const seasons = new Map<number, SeasonDTO>();
 	for (let episodeEntity of episodeEntities) {
+		const ratingEntity = ratingMap.get(episodeEntity.id);
+		if (!ratingEntity) {
+			continue;
+		}
 		const seasonNumber = episodeEntity.season;
-		const episodeRating = episodeEntity.rating;
-		const episodeVotes = episodeEntity.votes;
+		const episodeRating = ratingEntity.averageRating;
+		const episodeVotes = ratingEntity.numVotes;
 		const season: SeasonDTO = seasons.get(seasonNumber) ?? { season: seasonNumber, episodes: [] };
 		season.episodes.push({ episode: episodeEntity.episode, rating: episodeRating, votes: episodeVotes });
 		seasons.set(seasonNumber, season);
