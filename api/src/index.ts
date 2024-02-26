@@ -3,11 +3,11 @@ import express from 'express';
 import { searchRoute } from './searchRoute';
 import { ratingsRoute } from './ratingsRoute';
 import { datasource } from './database/datasource';
-import { fillDatabaseIfEmpty, isDatabaseUpdating } from './database/fillDatabaseIfEmpty';
+import { isDatabaseUpdating } from './database/fillDatabaseIfEmpty';
 
 const app = express();
-const port = process.env.PORT ?? 3000;
-const url = process.env.CLIENT_URL ? '0.0.0.0' : 'http://localhost';
+const port =  process.env.PORT ? parseInt(process.env.PORT) : 3000;
+const url = process.env.CLIENT_URL ? '0.0.0.0' : 'localhost';
 
 if (process.env.CLIENT_URL) {
 	app.use((_, res, next) => {
@@ -30,7 +30,7 @@ app.use((_, res, next) => {
 
 datasource.initialize()
 	.then(() => {
-		app.listen(`${url}:${port}`, () => {
+		app.listen(port, url, () => {
 			console.log(`Server is running at ${url}:${port}`);
 		});
 	});

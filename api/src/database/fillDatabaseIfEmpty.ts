@@ -1,10 +1,12 @@
 import { datasource } from './datasource';
 import { TvShowEntity } from './entity/TvShowEntity';
-import { EntityManager, Repository } from 'typeorm';
+import { QueryBuilder } from 'typeorm';
 import { TsvReader } from '../util/TsvReader';
 import { imdbEpisodesPath, imdbRatingsPath, imdbTitlesPath } from '../datasets/imdb-datasets';
 import { EpisodeEntity } from './entity/EpisodeEntity';
 import { parseNumberOrElse } from '../util/parseNumberOrElse';
+import { loggable } from '../util/loggable';
+import { RatingEntity } from './entity/RatingEntity';
 import { resolveDatasets } from '../datasets/resolveDatasets';
 
 const CHUNK_SIZE = 500;
@@ -15,7 +17,7 @@ export function isDatabaseUpdating(): boolean {
 	return databaseUpdating;
 }
 
-export async function fillDatabaseIfEmpty(): Promise<void> {
+export const fillDatabaseIfEmpty = loggable('filling database if empty', async function fillDatabaseIfEmpty(): Promise<void> {
 	if (await datasource.manager.count(TvShowEntity) > 0) {
 		return;
 	}
@@ -27,56 +29,66 @@ export async function fillDatabaseIfEmpty(): Promise<void> {
 	await fillDatabase();
 
 	databaseUpdating = false;
-}
+});
 
-async function fillDatabase(): Promise<void> {
-	console.log('Filling database');
-	const tvShowRepository = datasource.getRepository(TvShowEntity);
-	// const episodeRepository = datasource.getRepository(EpisodeEntity);
+export const fillDatabase = loggable(
+	'filling database',
+	async function fillDatabase(): Promise<void> {
 
-	console.log('filling tv shows');
-	await fillTvShows(tvShowRepository);
+		const queryRunner = datasource.createQueryRunner();
 
-	console.log('filling episodes');
-	await fillEpisodes(datasource.manager);
+		try {
+			await queryRunner.connect();
+			const queryBuilder = datasource.createQueryBuilder(queryRunner);
 
-	console.log('filling ratings');
-	await fillRatings(datasource.manager);
+			await queryRunner.startTransaction();
 
-	console.log('database filled');
-}
+			await fillTvShows(queryBuilder)
+			await fillEpisodes(queryBuilder);
+			await fillRatings(queryBuilder);
 
-async function fillTvShows(tvShowRepository: Repository<TvShowEntity>): Promise<void> {
-	const tvShowReader = new TsvReader(
-		imdbTitlesPath, 
-		[
-			'tconst',
-			'titleType',
-			'primaryTitle',
-			'originalTitle',
-			'isAdult',
-			'startYear',
-			'endYear',
-			'runtimeMinutes',
-			'genres'
-		] as const
-	);
-	
-	for await (const tvShows of tvShowReader.readMultiple(CHUNK_SIZE, tvShow => tvShow.titleType === 'tvSeries')) {
-		const tvShowEntities = tvShows
-			.map(tvShow => {
-				const tvShowEntity = new TvShowEntity();
-				tvShowEntity.id = tvShow.tconst;
-				tvShowEntity.title = tvShow.primaryTitle;
-				tvShowEntity.originalTitle = tvShow.originalTitle;
-				return tvShowEntity;
-			});
-
-		await tvShowRepository.save(tvShowEntities);
+			await queryRunner.commitTransaction();
+		} catch (error) {
+			console.error('Error while filling database', error);
+			await queryRunner.rollbackTransaction();
+		}
 	}
-}
+);
 
-async function fillEpisodes(manager: EntityManager): Promise<void> {
+const fillTvShows = loggable(
+	'filling tv shows',
+	async function fillTvShows(queryBuilder: QueryBuilder<any>): Promise<void> {
+		const tvShowReader = new TsvReader(
+			imdbTitlesPath,
+			[
+				'tconst',
+				'titleType',
+				'primaryTitle',
+				'originalTitle',
+				'isAdult',
+				'startYear',
+				'endYear',
+				'runtimeMinutes',
+				'genres'
+			] as const
+		);
+
+		for await (const tvShows of tvShowReader.readMultiple(CHUNK_SIZE, tvShow => tvShow.titleType === 'tvSeries')) {
+			const tvShowEntities = tvShows
+				.map(tvShow => {
+					const tvShowEntity = new TvShowEntity();
+					tvShowEntity.id = tvShow.tconst;
+					tvShowEntity.title = tvShow.primaryTitle;
+					tvShowEntity.originalTitle = tvShow.originalTitle;
+					return tvShowEntity;
+				});
+
+			await queryBuilder.insert().into(TvShowEntity).values(tvShowEntities).execute();
+		}
+	}
+);
+
+export const fillEpisodes = loggable('filling episodes', async function fillEpisodes(queryBuilder: QueryBuilder<any>): Promise<void> {
 	const episodeReader = new TsvReader(
 		imdbEpisodesPath,
 		[
@@ -95,16 +107,14 @@ async function fillEpisodes(manager: EntityManager): Promise<void> {
 			episodeEntity.season = parseNumberOrElse(episode.seasonNumber, -1);
 			episodeEntity.episode = parseNumberOrElse(episode.episodeNumber, -1);
 			episodeEntity.tvShowId = episode.parentTconst;
-			episodeEntity.rating = 0;
-			episodeEntity.votes = 0;
 			return episodeEntity;
 		});
 
-		await manager.save(episodeEntities);
+		await queryBuilder.insert().into(EpisodeEntity).values(episodeEntities).execute();
 	}
-}
+});
 
-async function fillRatings(manager: EntityManager): Promise<void> {
+export const fillRatings = loggable('filling ratings', async function fillRatings(queryBuilder: QueryBuilder<any>): Promise<void> {
 	const episodeReader = new TsvReader(
 		imdbRatingsPath,
 		[
@@ -114,13 +124,14 @@ async function fillRatings(manager: EntityManager): Promise<void> {
 		] as const
 	);
 
-	for await (const rating of episodeReader.read()) {
+	for await (const ratings of episodeReader.readMultiple(CHUNK_SIZE)) {
 
-		const episodeEntityPartial = {
-			rating: parseNumberOrElse(rating.averageRating, 0),
-			votes: parseNumberOrElse(rating.numVotes, 0),
-		};
+		const ratingEntities = ratings.map(rating => ({
+			id: rating.tconst,
+			averageRating: parseNumberOrElse(rating.averageRating, 0),
+			numVotes: parseNumberOrElse(rating.numVotes, 0)
+		} as Partial<RatingEntity>));
 
-		await manager.update(EpisodeEntity, rating.tconst, episodeEntityPartial);
+		await queryBuilder.insert().into(RatingEntity).values(ratingEntities).execute();
 	}
-}
+});

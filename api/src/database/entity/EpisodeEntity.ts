@@ -13,10 +13,4 @@ export class EpisodeEntity {
 
 	@Column()
 	episode!: number;
-
-	@Column()
-	rating!: number;
-
-	@Column()
-	votes!: number;
 }
