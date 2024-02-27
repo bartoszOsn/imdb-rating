@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Colors, size, zIndex } from '../styles.ts';
 import { FormEvent, ReactNode, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 export interface SearchComponentProps {
 	children?: ReactNode;
@@ -17,7 +19,7 @@ export const SearchComponent = (props: SearchComponentProps) => {
 	return (
 		<SearchContainer>
 			<SearchInput type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
-			<IconContainer>🔎</IconContainer>
+			<IconContainer icon={faMagnifyingGlass} />
 			{
 				hasFocus && props.children && (
 					<DropdownContainer>
@@ -52,7 +54,7 @@ const SearchInput = styled.input`
 	}
 `
 
-const IconContainer = styled.div`
+const IconContainer = styled(FontAwesomeIcon)`
 	padding: ${size(2)};
 `
 

@@ -6,6 +6,9 @@ import { searchRequest } from '../infrastructure/searchRequest.ts';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Colors, size, textSizes } from '../util/styles.ts';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-regular-svg-icons';
+
 
 export const SearchShowComponent = () => {
 	const [search, setSearch] = useDebouncedState('', 500);
@@ -66,7 +69,9 @@ export const SearchShowComponent = () => {
 							{show.name}
 							<DropdownContentItemDetailsComponent>
 								<span>{show.startYear} – {show.endYear}</span>
-								<span>{show.rating}</span>
+								<span>
+									<FontAwesomeIcon icon={faStar} /> {show.rating}
+								</span>
 							</DropdownContentItemDetailsComponent>
 						</DropdownContentItemComponent>
 					))
