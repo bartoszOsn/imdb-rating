@@ -119,7 +119,7 @@ const Cell = styled.div<{ sticky?: true}>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: ${textSizes.small};
+	font-size: ${textSizes.xs};
 	z-index: ${props => props.sticky ? zIndex.elevated : zIndex.default };
 	position: ${props => props.sticky ? 'sticky' : 'static'};
 	top: 0;

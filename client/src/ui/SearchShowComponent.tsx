@@ -4,6 +4,8 @@ import { ReactNode, useEffect, useState } from 'react';
 import { TvShowDTO } from '../../../shared/SearchShowResultDTO.ts';
 import { searchRequest } from '../infrastructure/searchRequest.ts';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { Colors, size, textSizes } from '../util/styles.ts';
 
 export const SearchShowComponent = () => {
 	const [search, setSearch] = useDebouncedState('', 500);
@@ -57,9 +59,19 @@ export const SearchShowComponent = () => {
 		} else if (isError) {
 			dropdownContent = <div>Error fetching results</div>;
 		} else {
-			dropdownContent = results.map((show) => (
-				<Link to={`/tv-show/${show.id}`} key={show.id} onClick={hide}>{show.name}</Link>
-			));
+			dropdownContent = <DropdownContentComponent>
+				{
+					results.map((show) => (
+						<DropdownContentItemComponent to={`/tv-show/${show.id}`} key={show.id} onClick={hide}>
+							{show.name}
+							<DropdownContentItemDetailsComponent>
+								<span>2005 - 2021</span>
+								<span>8.7</span>
+							</DropdownContentItemDetailsComponent>
+						</DropdownContentItemComponent>
+					))
+				}
+			</DropdownContentComponent>;
 		}
 	}
 
@@ -71,3 +83,38 @@ export const SearchShowComponent = () => {
 		</SearchComponent>
 	)
 }
+
+const DropdownContentComponent = styled.div`
+	max-height: ${size(96)};
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	padding-top: ${size(2)};
+	padding-bottom: ${size(2)};
+`;
+
+const DropdownContentItemComponent = styled(Link)`
+	color: ${Colors.text.toString()};
+	text-decoration: none;
+	
+	display: flex;
+	flex-direction: column;
+	gap: ${size(1)};
+	
+	padding-top: ${size(1)};
+	padding-bottom: ${size(2)};
+	padding-left: ${size(2)};
+	padding-right: ${size(2)};
+	
+	
+	&:hover {
+		background-color: ${Colors.background.darken(0.1).toString()};
+	}
+`;
+
+const DropdownContentItemDetailsComponent = styled.div`
+	display: flex;
+	gap: ${size(2)};
+	color: ${Colors.textSubtle.toString()};
+	font-size: ${textSizes.small};
+`;

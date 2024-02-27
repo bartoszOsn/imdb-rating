@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Colors, size, zIndex } from '../styles.ts';
-import { FormEvent, ReactNode } from 'react';
+import { FormEvent, ReactNode, useState } from 'react';
 
 export interface SearchComponentProps {
 	children?: ReactNode;
@@ -9,13 +9,17 @@ export interface SearchComponentProps {
 
 export const SearchComponent = (props: SearchComponentProps) => {
 
+	const [hasFocus, setHasFocus] = useState(false);
+
 	const onInput = (e: FormEvent<HTMLInputElement>) => props.onInput?.(e.currentTarget.value);
+	const onFocus = () => setHasFocus(true);
+	const onBlur = () => setHasFocus(false);
 	return (
 		<SearchContainer>
-			<SearchInput type="text" onInput={onInput} />
+			<SearchInput type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
 			<IconContainer>🔎</IconContainer>
 			{
-				props.children && (
+				hasFocus && props.children && (
 					<DropdownContainer>
 						{props.children}
 					</DropdownContainer>
