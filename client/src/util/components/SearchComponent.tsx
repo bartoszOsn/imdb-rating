@@ -15,7 +15,7 @@ export const SearchComponent = (props: SearchComponentProps) => {
 
 	const onInput = (e: FormEvent<HTMLInputElement>) => props.onInput?.(e.currentTarget.value);
 	const onFocus = () => setHasFocus(true);
-	const onBlur = () => setHasFocus(false);
+	const onBlur = () => setTimeout(() => setHasFocus(false), 100);
 	return (
 		<SearchContainer>
 			<SearchInput type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
