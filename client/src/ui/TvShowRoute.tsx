@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { RatingsDTO } from '../../../shared/RatingsDTO.ts';
 import { tvShowRequest } from '../infrastructure/tvShowRequest.ts';
 import styled from 'styled-components';
-import { Colors, size, textSizes } from '../util/styles.ts';
+import { Colors, size, textSizes, zIndex } from '../util/styles.ts';
 
 export const TvShowRoute = () => {
 	const { id } = useParams<{ id: string }>();
@@ -119,7 +119,8 @@ const Cell = styled.div<{ sticky?: true}>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: ${textSizes.small};
+	font-size: ${textSizes.xs};
+	z-index: ${props => props.sticky ? zIndex.elevated : zIndex.default };
 	position: ${props => props.sticky ? 'sticky' : 'static'};
 	top: 0;
 	&:hover {

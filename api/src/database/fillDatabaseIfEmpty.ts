@@ -80,6 +80,8 @@ const fillTvShows = loggable(
 					tvShowEntity.id = tvShow.tconst;
 					tvShowEntity.title = tvShow.primaryTitle;
 					tvShowEntity.originalTitle = tvShow.originalTitle;
+					tvShowEntity.startYear = parseNumberOrElse(tvShow.startYear, -1);
+					tvShowEntity.endYear = parseNumberOrElse(tvShow.endYear, tvShowEntity.startYear);
 					return tvShowEntity;
 				});
 

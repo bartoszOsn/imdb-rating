@@ -10,4 +10,10 @@ export class TvShowEntity {
 
 	@Column()
 	originalTitle!: string;
+
+	@Column()
+	startYear!: number;
+
+	@Column()
+	endYear!: number;
 }
