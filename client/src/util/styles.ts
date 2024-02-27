@@ -37,3 +37,9 @@ export const textSizes = {
 export type Fonts = typeof Fonts;
 
 export const size = (size: number) => css`${size * 4}px`;
+
+export const zIndex = {
+	default: 0,
+	elevated: 1,
+	overlay: 2
+}

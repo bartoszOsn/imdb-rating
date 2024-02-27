@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Colors, size } from '../styles.ts';
+import { Colors, size, zIndex } from '../styles.ts';
 import { FormEvent, ReactNode } from 'react';
 
 export interface SearchComponentProps {
@@ -55,6 +55,7 @@ const IconContainer = styled.div`
 const DropdownContainer = styled.div`
 	position: absolute;
 	top: 100%;
+	z-index: ${zIndex.overlay};
 	left: -${size(0.5)};
 	right: -${size(0.5)};
 	background-color: ${Colors.background.toString()};
