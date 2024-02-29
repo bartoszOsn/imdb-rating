@@ -1,10 +1,5 @@
 import { Router } from 'express';
-import { SearchShowResultDTO, TvShowDTO } from '../../shared/SearchShowResultDTO';
-import { searchTvShow } from './database/searchTvShow';
-import { combineWith } from './util/promise/combineWith';
-import { getRatingsByIds } from './database/getRatingsByIds';
-import { TvShowEntity } from './database/entity/TvShowEntity';
-import { RatingEntity } from './database/entity/RatingEntity';
+import { searchTMDB } from './tmdb/searchTMDB';
 
 const router = Router();
 
@@ -16,24 +11,8 @@ router.get('/search', (req, res) => {
 		return;
 	}
 
-	searchTvShow(query as string)
-		.then(combineWith<Array<TvShowEntity>, Array<RatingEntity>>((entities) => getRatingsByIds(entities.map((entity) => entity.id))))
-		.then(([entities, ratings]) => {
-			const ratingMap = new Map<string, RatingEntity>(
-				ratings.map((rating) => [rating.id, rating])
-			);
-
-			const shows: Array<TvShowDTO> = entities.map((entity) => ({
-				id: entity.id,
-				name: entity.title,
-				startYear: entity.startYear,
-				endYear: entity.endYear,
-				rating: ratingMap.get(entity.id)?.averageRating ?? 0
-			}));
-
-			const dto: SearchShowResultDTO = {
-				shows: shows.sort((a, b) => (ratingMap.get(b.id)?.numVotes ?? 0) - (ratingMap.get(a.id)?.numVotes ?? 0))
-			}
+	searchTMDB(query as string)
+		.then((dto) => {
 			res.json(dto);
 		})
 		.catch((err) => {
