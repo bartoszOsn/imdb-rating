@@ -15,14 +15,18 @@ export const SearchComponent = (props: SearchComponentProps) => {
 
 	const onInput = (e: FormEvent<HTMLInputElement>) => props.onInput?.(e.currentTarget.value);
 	const onFocus = () => setHasFocus(true);
-	const onBlur = () => setTimeout(() => setHasFocus(false), 100);
+	const onBlur = (e: FocusEvent) => {
+		if (e.relatedTarget && e.relatedTarget instanceof HTMLElement && e.relatedTarget.closest('.search-dropdown')) return;
+
+		return setTimeout(() => setHasFocus(false), 100);
+	};
 	return (
 		<SearchContainer>
 			<SearchInput type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
 			<IconContainer icon={faMagnifyingGlass} />
 			{
 				hasFocus && props.children && (
-					<DropdownContainer>
+					<DropdownContainer className='search-dropdown'>
 						{props.children}
 					</DropdownContainer>
 				)
