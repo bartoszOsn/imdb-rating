@@ -3,7 +3,7 @@ export interface RatingsDTO {
 }
 
 export interface SeasonDTO {
-	season: number
+	season: number;
 	episodes: Array<EpisodeDTO>
 }
 

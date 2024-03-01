@@ -9,7 +9,7 @@ export function fetchTMDB<TResponse>(endpoint: `/${string}`): Promise<TResponse>
 	return fetch(`https://api.themoviedb.org/3${endpoint}`, options)
 		.then((response) => {
 			if (!response.ok) {
-				throw new Error('Failed to fetch from TMDB');
+				throw response;
 			}
 			return response.json();
 		});
