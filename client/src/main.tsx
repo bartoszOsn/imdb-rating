@@ -4,6 +4,7 @@ import App from './App.tsx';
 import { GlobalStyles } from './util/GlobalStyles.ts';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { TvShowRoute } from './ui/TvShowRoute.tsx';
+import './index.css';
 
 const router = createHashRouter([
 	{
