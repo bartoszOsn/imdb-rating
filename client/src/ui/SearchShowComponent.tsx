@@ -68,7 +68,7 @@ export const SearchShowComponent = () => {
 						<DropdownContentItemComponent to={`/tv-show/${show.id}`} key={show.id} onClick={hide}>
 							{show.name}
 							<DropdownContentItemDetailsComponent>
-								<span>{show.startYear} – {show.endYear}</span>
+								<span>{show.startYear}</span>
 								<span>
 									<FontAwesomeIcon icon={faStar} /> {show.rating}
 								</span>
