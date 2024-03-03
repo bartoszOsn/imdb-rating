@@ -10,7 +10,9 @@ function App() {
 			<SearchShowComponent />
 			<Hr />
 			<div className='flex-grow overflow-y-auto w-full flex flex-col items-center -mr-4'>
-				<Outlet />
+				<div className='max-w-2xl w-full'>
+					<Outlet />
+				</div>
 			</div>
 		</AppLayout>
     </>

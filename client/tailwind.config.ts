@@ -58,7 +58,9 @@ export default {
 			xs: '10px',
 			small: '12px',
 			medium: '16px',
-			large: '20px'
+			large: '20px',
+			xl: '24px',
+			'2xl': '32px'
 		}
 	},
 	plugins: [],
