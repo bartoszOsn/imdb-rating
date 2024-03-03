@@ -1,9 +1,8 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { RatingsDTO } from '../../../shared/RatingsDTO.ts';
 import { tvShowRequest } from '../infrastructure/tvShowRequest.ts';
-import styled from 'styled-components';
-import { Colors, size, textSizes, zIndex } from '../util/styles.ts';
+import { Colors } from '../util/styles.ts';
 
 export const TvShowRoute = () => {
 	const { id } = useParams<{ id: string }>();
@@ -53,7 +52,6 @@ const EpisodesTable = ({ ratings }: { ratings: RatingsDTO }) => {
 
 	const getRatingColor = (rating: number) => {
 		const normalizedRating = (rating - minRating) / (maxRating - minRating);
-		// const normalizedRating = maxRating / 10;
 
 		if (normalizedRating < 0.5) {
 			const color = Colors.danger.mix(Colors.waring, normalizedRating * 2);
@@ -62,74 +60,51 @@ const EpisodesTable = ({ ratings }: { ratings: RatingsDTO }) => {
 			const color = Colors.waring.mix(Colors.success, (normalizedRating - 0.5) * 2);
 			return color.toString();
 		}
-
-		const color = Colors.danger.mix(Colors.success, normalizedRating);
-		return color.toString();
 	}
 
+	const columnClasses = 'flex flex-col gap-0.5';
+
 	return (
-		<Table>
-			<Column>
-				<HeaderCell></HeaderCell>
+		<div className='flex flex-row gap-0.5'>
+			<div className={columnClasses}>
+				<Cell header={true} highest={true}></Cell>
 				{
 					episodeNumbers.map((episodeNumber) => (
-							<HeaderCell>{episodeNumber}</HeaderCell>
+							<Cell header={true}>{episodeNumber}</Cell>
 					))
 				}
-			</Column>
+			</div>
 			{
 				ratings.seasons.map((season) => {
 					return (
-						<Column>
-							<HeaderCell sticky={true}>{season.season}</HeaderCell>
+						<div className={columnClasses}>
+							<Cell header={true}>{season.season}</Cell>
 							{
 								season.episodes.map((episode) => {
 									return (
-										<Cell style={{ backgroundColor: getRatingColor(episode.rating)}}>
+										<Cell color={getRatingColor(episode.rating)}>
 											{episode.rating}
 										</Cell>
 									);
 								})
 							}
-						</Column>
+						</div>
 					);
 				})
 			}
-		</Table>
+		</div>
 	);
 };
 
-const gap = size(0.5);
-
-const Table = styled.div`
-	display: flex;
-	flex-direction: row;
-	gap: ${gap};
-`;
-
-const Column = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: ${gap};
-`;
-
-const Cell = styled.div<{ sticky?: true}>`
-	width: ${size(6)};
-	height: ${size(6)};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: ${textSizes.xs};
-	z-index: ${props => props.sticky ? zIndex.elevated : zIndex.default };
-	position: ${props => props.sticky ? 'sticky' : 'static'};
-	top: 0;
-	&:hover {
-		outline: ${size(0.5)} solid ${Colors.primary.toString()};
+const Cell = (props: { children?: ReactNode, header?: boolean, color?: string, highest?: boolean}) => {
+	let classNames = 'w-6 h-6 flex items-center justify-center text-xs hover:outline outline-primary outline-2';
+	if (props.header) {
+		classNames += ` font-bold bg-primary text-background sticky top-0 ${props.highest ? 'z-elevated-plus': 'z-elevated'}`;
 	}
-`
 
-const HeaderCell = styled(Cell)`
-	font-weight: bold;
-	background-color: ${Colors.primary.toString()};
-	color: ${Colors.background.toString()};
-`
+	return (
+		<div className={classNames} style={{ backgroundColor: props.color}}>
+			{props.children}
+		</div>
+	);
+}

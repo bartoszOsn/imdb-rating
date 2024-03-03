@@ -37,8 +37,9 @@ export default {
 		colors,
 		zIndex: {
 			default: '0',
-			elevated: '1',
-			overlay: '2'
+			elevated: '10',
+			'elevated-plus': '15',
+			overlay: '20'
 		},
 		fontSize: {
 			xs: '10px',
