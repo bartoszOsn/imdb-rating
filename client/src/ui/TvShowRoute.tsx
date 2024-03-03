@@ -3,7 +3,8 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { RatingsDTO } from '../../../shared/RatingsDTO.ts';
 import { tvShowRequest } from '../infrastructure/tvShowRequest.ts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-regular-svg-icons';
+import { faStar, faClock } from '@fortawesome/free-regular-svg-icons';
+import { imageTMDBBaseUrl } from '../imageTMDBBaseUrl.ts';
 
 export const TvShowRoute = () => {
 	const { id } = useParams<{ id: string }>();
@@ -40,23 +41,34 @@ export const TvShowRoute = () => {
 const TvShowDetails = ({ ratings }: { ratings: RatingsDTO }) => {
 	return (
 		<div className='flex flex-row gap-4 mb-4'>
-			<img className='w-48' src="https://www.themoviedb.org/t/p/w600_and_h900_bestv2/7RRHbCUtAsVmKI6FEMzZB6Re88P.jpg" />
+			<img className='w-48' src={`${imageTMDBBaseUrl}${ratings.posterPath}`} />
 			<div>
 				<h1>
-					Futurama
-					<span className='text-textSubtle'> (1999)</span>
+					{ratings.name}
+					<span className='text-textSubtle'> ({ratings.year})</span>
 				</h1>
-				<p className='text-textSubtle mb-4'>Comedy, Animation, Science-Fiction</p>
-				<p>Philip J. Fry przez przypadek hibernuje się i budzi w odległej przyszłości, gdzie poznaje krewnego, profesora Hubert J. Farnswortha, który postanawia zatrudnić chłopaka jako kuriera.</p>
-				<div className='flex flex-row gap-2 mt-4 items-center text-large text-textSubtle'>
-					<FontAwesomeIcon icon={faStar} /> 8.4
+				<p className='text-textSubtle mb-4'>{ratings.genres.join(', ')}</p>
+				<p>{ratings.overview}</p>
+				<div className="flex flex-row gap-4 mt-4 text-small text-textSubtle">
+					<p className="flex flex-row gap-2 items-center">
+						<FontAwesomeIcon icon={faStar}/> {Math.round(ratings.rating * 10) / 10}
+					</p>
+					{
+						ratings.runtime && (
+							<p className="flex flex-row gap-2 items-center">
+								<FontAwesomeIcon icon={faClock}/> {ratings.runtime} min
+							</p>
+						)
+					}
+					<p>{ratings.creators.join(', ')}</p>
+					<p>{ratings.productionCountries.join(', ')}</p>
 				</div>
 			</div>
 		</div>
 	)
 }
 
-const EpisodesTable = ({ ratings }: { ratings: RatingsDTO }) => {
+const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 	const maxEpisodes = useMemo(
 		() => Math.max(...ratings.seasons.map((season) => season.episodes.length)),
 		[ratings]

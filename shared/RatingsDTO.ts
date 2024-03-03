@@ -1,5 +1,14 @@
 export interface RatingsDTO {
 	seasons: Array<SeasonDTO>
+	name: string;
+	overview: string;
+	rating: number;
+	genres: Array<string>,
+	posterPath: string;
+	year: number;
+	productionCountries: Array<string>;
+	runtime?: number;
+	creators: Array<string>;
 }
 
 export interface SeasonDTO {
