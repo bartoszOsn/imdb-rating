@@ -17,8 +17,7 @@
     "color": "^4.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0",
-    "styled-components": "^6.1.8"
+    "react-router-dom": "^6.22.0"
   },
   "devDependencies": {
     "@types/color": "^3.0.6",
