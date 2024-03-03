@@ -1,5 +1,3 @@
-import { ComponentProps } from 'react';
+import { withClasses } from '../withClasses.tsx';
 
-export const Hr = (props: ComponentProps<'hr'>) => (
-	<hr {...props} className={`${props.className ?? ''} w-full m-0 border-border`} />
-)
+export const Hr = withClasses('hr', 'w-full m-0 border-border');

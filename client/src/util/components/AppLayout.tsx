@@ -10,8 +10,3 @@ export const AppLayout = styled.div`
 	gap: ${size(2)};
 	padding: ${size(2)};
 `;
-
-export const AppLayoutRoute = styled.div`
-	align-self: stretch;
-	flex-grow: 1;
-`
