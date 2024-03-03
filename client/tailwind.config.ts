@@ -11,6 +11,7 @@ export const colors = (() => {
 	const success = new Color('#16DB93');
 	const primary = new Color('#006494');
 	const border = text.mix(background, 0.6);
+	const transparent = new Color('transparent');
 
 	return {
 		background: background.toString(),
@@ -20,7 +21,8 @@ export const colors = (() => {
 		waring: waring.toString(),
 		success: success.toString(),
 		primary: primary.toString(),
-		border: border.toString()
+		border: border.toString(),
+		transparent: transparent.toString(),
 	} as const;
 })();
 
@@ -30,7 +32,12 @@ export default {
 		'./index.html',
 	],
 	theme: {
-		colors
+		colors,
+		zIndex: {
+			default: '0',
+			elevated: '1',
+			overlay: '2'
+		}
 	},
 	plugins: [],
 } satisfies Config

@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-import { Colors, size, zIndex } from '../styles.ts';
 import React, { FormEvent, ReactNode, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -20,56 +18,22 @@ export const SearchComponent = (props: SearchComponentProps) => {
 
 		setTimeout(() => setHasFocus(false), 100);
 	};
+
+	const searchContainerClasses = 'max-w-sm w-full flex flex-row items-center justify-between border-2 border-border relative'
+	const searchInputClasses = 'flex-grow flex-basis-0 block p-2 bg-transparent border-none focus:outline-none'
+	const dropdownContainerClasses = 'search-dropdown absolute top-full z-overlay -left-0.5 -right-0.5 bg-background border-2 border-border flex flex-col';
+
 	return (
-		<SearchContainer>
-			<SearchInput type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
-			<IconContainer icon={faMagnifyingGlass} />
+		<div className={searchContainerClasses}>
+			<input className={searchInputClasses} type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
+			<FontAwesomeIcon className="p-2" icon={faMagnifyingGlass} />
 			{
 				hasFocus && props.children && (
-					<DropdownContainer className='search-dropdown'>
+					<div className={dropdownContainerClasses}>
 						{props.children}
-					</DropdownContainer>
+					</div>
 				)
 			}
-		</SearchContainer>
+		</div>
 	);
 }
-
-const SearchContainer = styled.div`
-	max-width: ${size(96)};
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	align-items: center;	
-	justify-content: space-between;
-	border: ${size(0.5)} solid ${Colors.border.toString()};
-	position: relative;
-`
-
-const SearchInput = styled.input`
-	flex-grow: 1;
-	flex-basis: 0;
-	display: block;
-	padding: ${size(2)};
-	border: none;
-	background-color: transparent;
-	&:focus-visible {
-		outline: none;
-	}
-`
-
-const IconContainer = styled(FontAwesomeIcon)`
-	padding: ${size(2)};
-`
-
-const DropdownContainer = styled.div`
-	position: absolute;
-	top: 100%;
-	z-index: ${zIndex.overlay};
-	left: -${size(0.5)};
-	right: -${size(0.5)};
-	background-color: ${Colors.background.toString()};
-	border: ${size(0.5)} solid ${Colors.border.toString()};
-	display: flex;
-	flex-direction: column;
-`
