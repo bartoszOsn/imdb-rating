@@ -7,7 +7,7 @@ export const colors = (() => {
 	const text = new Color('#04030F');
 	const textSubtle = new Color('#a8a6b0');
 	const danger = new Color('#AD343E');
-	const waring = new Color('#F9C22E');
+	const warning = new Color('#F9C22E');
 	const success = new Color('#16DB93');
 	const primary = new Color('#006494');
 	const border = text.mix(background, 0.6);
@@ -20,11 +20,24 @@ export const colors = (() => {
 		text: text.toString(),
 		textSubtle: textSubtle.toString(),
 		danger: danger.toString(),
-		waring: waring.toString(),
+		warning: warning.toString(),
 		success: success.toString(),
 		primary: primary.toString(),
 		border: border.toString(),
 		transparent: transparent.toString(),
+		scale: {
+			'0': danger.toString(),
+			'1':danger.mix(warning, 0.2).toString(),
+			'2':danger.mix(warning, 0.4).toString(),
+			'3':danger.mix(warning, 0.6).toString(),
+			'4':danger.mix(warning, 0.8).toString(),
+			'5':warning.toString(),
+			'6':warning.mix(success, 0.2).toString(),
+			'7':warning.mix(success, 0.4).toString(),
+			'8':warning.mix(success, 0.6).toString(),
+			'9':warning.mix(success, 0.8).toString(),
+			'10':success.toString(),
+		}
 	} as const;
 })();
 

@@ -2,7 +2,6 @@ import { useParams } from 'react-router-dom';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { RatingsDTO } from '../../../shared/RatingsDTO.ts';
 import { tvShowRequest } from '../infrastructure/tvShowRequest.ts';
-import { Colors } from '../util/styles.ts';
 
 export const TvShowRoute = () => {
 	const { id } = useParams<{ id: string }>();
@@ -34,32 +33,14 @@ export const TvShowRoute = () => {
 }
 
 const EpisodesTable = ({ ratings }: { ratings: RatingsDTO }) => {
-	const allRatings = useMemo(
-		() => ratings.seasons
-			.flat()
-			.flatMap((season) => season.episodes)
-			.map((episode) => episode.rating),
-		[ratings]
-	)
-
-	const maxRating = useMemo(() => Math.max(...allRatings), [allRatings]);
-	const minRating = useMemo(() => Math.min(...allRatings), [allRatings]);
 	const maxEpisodes = useMemo(
 		() => Math.max(...ratings.seasons.map((season) => season.episodes.length)),
 		[ratings]
 	);
 	const episodeNumbers = useMemo(() => Array.from({ length: maxEpisodes }, (_, i) => i + 1), [maxEpisodes]);
 
-	const getRatingColor = (rating: number) => {
-		const normalizedRating = (rating - minRating) / (maxRating - minRating);
-
-		if (normalizedRating < 0.5) {
-			const color = Colors.danger.mix(Colors.waring, normalizedRating * 2);
-			return color.toString();
-		} else {
-			const color = Colors.waring.mix(Colors.success, (normalizedRating - 0.5) * 2);
-			return color.toString();
-		}
+	const normalizeRating = (rating: number) => {
+		return Math.round(rating);
 	}
 
 	const columnClasses = 'flex flex-col gap-0.5';
@@ -82,8 +63,8 @@ const EpisodesTable = ({ ratings }: { ratings: RatingsDTO }) => {
 							{
 								season.episodes.map((episode) => {
 									return (
-										<Cell color={getRatingColor(episode.rating)}>
-											{episode.rating}
+										<Cell scale={normalizeRating(episode.rating)}>
+											{Math.round(episode.rating * 10) / 10}
 										</Cell>
 									);
 								})
@@ -96,15 +77,40 @@ const EpisodesTable = ({ ratings }: { ratings: RatingsDTO }) => {
 	);
 };
 
-const Cell = (props: { children?: ReactNode, header?: boolean, color?: string, highest?: boolean}) => {
+const Cell = (props: { children?: ReactNode, header?: boolean, scale?: number, highest?: boolean}) => {
 	let classNames = 'w-6 h-6 flex items-center justify-center text-xs hover:outline outline-primary outline-2';
 	if (props.header) {
 		classNames += ` font-bold bg-primary text-background sticky top-0 ${props.highest ? 'z-elevated-plus': 'z-elevated'}`;
 	}
 
+	if (props.scale !== undefined) {
+		classNames += ' ' + getColorClass(props.scale);
+	}
+
 	return (
-		<div className={classNames} style={{ backgroundColor: props.color}}>
+		<div className={classNames}>
 			{props.children}
 		</div>
 	);
+}
+
+function getColorClass(rating: number): string {
+	const classes = {
+		0: 'bg-scale-0',
+		1: 'bg-scale-1',
+		2: 'bg-scale-2',
+		3: 'bg-scale-3',
+		4: 'bg-scale-4',
+		5: 'bg-scale-5',
+		6: 'bg-scale-6',
+		7: 'bg-scale-7',
+		8: 'bg-scale-8',
+		9: 'bg-scale-9',
+		10: 'bg-scale-10'
+	}
+
+	if (!(rating in classes)) {
+		return 'bg-backgroundDark';
+	}
+	return classes[rating as keyof typeof classes];
 }
