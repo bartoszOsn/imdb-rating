@@ -12,9 +12,11 @@ export const colors = (() => {
 	const primary = new Color('#006494');
 	const border = text.mix(background, 0.6);
 	const transparent = new Color('transparent');
+	const backgroundDark = background.mix(text, 0.1);
 
 	return {
 		background: background.toString(),
+		backgroundDark: backgroundDark.toString(),
 		text: text.toString(),
 		textSubtle: textSubtle.toString(),
 		danger: danger.toString(),
@@ -37,6 +39,12 @@ export default {
 			default: '0',
 			elevated: '1',
 			overlay: '2'
+		},
+		fontSize: {
+			xs: '10px',
+			small: '12px',
+			medium: '16px',
+			large: '20px'
 		}
 	},
 	plugins: [],

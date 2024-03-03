@@ -3,9 +3,7 @@ import { useDebouncedState } from '../util/useDebouncedState.ts';
 import { ReactNode, useEffect, useState } from 'react';
 import { TvShowDTO } from '../../../shared/SearchShowResultDTO.ts';
 import { searchRequest } from '../infrastructure/searchRequest.ts';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Colors, size, textSizes } from '../util/styles.ts';
+import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 
@@ -62,21 +60,26 @@ export const SearchShowComponent = () => {
 		} else if (isError) {
 			dropdownContent = <div>Error fetching results</div>;
 		} else {
-			dropdownContent = <DropdownContentComponent>
+			dropdownContent = <div  className="max-h-96 flex flex-col overflow-y-auto py-2">
 				{
 					results.map((show) => (
-						<DropdownContentItemComponent to={`/tv-show/${show.id}`} key={show.id} onClick={hide}>
+						<Link
+							to={`/tv-show/${show.id}`}
+							key={show.id}
+							onClick={hide}
+							className='flex flex-col gap-1 p-2 pt-1 hover:bg-backgroundDark'
+						>
 							{show.name}
-							<DropdownContentItemDetailsComponent>
+							<div className='flex gap-2 text-textSubtle text-small'>
 								<span>{show.startYear}</span>
 								<span>
 									<FontAwesomeIcon icon={faStar} /> {show.rating}
 								</span>
-							</DropdownContentItemDetailsComponent>
-						</DropdownContentItemComponent>
+							</div>
+						</Link>
 					))
 				}
-			</DropdownContentComponent>;
+			</div>;
 		}
 	}
 
@@ -88,38 +91,3 @@ export const SearchShowComponent = () => {
 		</SearchComponent>
 	)
 }
-
-const DropdownContentComponent = styled.div`
-	max-height: ${size(96)};
-	display: flex;
-	flex-direction: column;
-	overflow-y: auto;
-	padding-top: ${size(2)};
-	padding-bottom: ${size(2)};
-`;
-
-const DropdownContentItemComponent = styled(Link)`
-	color: ${Colors.text.toString()};
-	text-decoration: none;
-	
-	display: flex;
-	flex-direction: column;
-	gap: ${size(1)};
-	
-	padding-top: ${size(1)};
-	padding-bottom: ${size(2)};
-	padding-left: ${size(2)};
-	padding-right: ${size(2)};
-	
-	
-	&:hover {
-		background-color: ${Colors.background.darken(0.1).toString()};
-	}
-`;
-
-const DropdownContentItemDetailsComponent = styled.div`
-	display: flex;
-	gap: ${size(2)};
-	color: ${Colors.textSubtle.toString()};
-	font-size: ${textSizes.small};
-`;
