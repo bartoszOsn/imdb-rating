@@ -52,7 +52,8 @@ export default {
 			default: '0',
 			elevated: '10',
 			'elevated-plus': '15',
-			overlay: '20'
+			overlay: '20',
+			tooltip: '30'
 		},
 		fontSize: {
 			xs: '10px',

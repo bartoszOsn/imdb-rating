@@ -5,6 +5,7 @@ import { tvShowRequest } from '../infrastructure/tvShowRequest.ts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { imageTMDBBaseUrl } from '../imageTMDBBaseUrl.ts';
+import { Tooltip } from '../util/components/tooltip/Tooltip.tsx';
 
 export const TvShowRoute = () => {
 	const { id } = useParams<{ id: string }>();
@@ -101,9 +102,11 @@ const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 								{
 									season.episodes.map((episode) => {
 										return (
-											<Cell scale={normalizeRating(episode.rating)}>
-												{Math.round(episode.rating * 10) / 10}
-											</Cell>
+											<Tooltip content={episode.rating}>
+												<Cell scale={normalizeRating(episode.rating)}>
+													{Math.round(episode.rating * 10) / 10}
+												</Cell>
+											</Tooltip>
 										);
 									})
 								}

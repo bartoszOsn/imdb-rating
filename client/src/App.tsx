@@ -2,10 +2,11 @@ import { AppLayout } from './util/components/AppLayout.tsx';
 import { Hr } from './util/components/Hr.tsx';
 import { SearchShowComponent } from './ui/SearchShowComponent.tsx';
 import { Outlet } from 'react-router-dom';
+import { TooltipProvider } from './util/components/tooltip';
 
 function App() {
   return (
-    <>
+    <TooltipProvider>
 		<AppLayout>
 			<SearchShowComponent />
 			<Hr />
@@ -15,7 +16,7 @@ function App() {
 				</div>
 			</div>
 		</AppLayout>
-    </>
+    </TooltipProvider>
   )
 }
 
