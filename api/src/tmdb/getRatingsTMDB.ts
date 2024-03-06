@@ -13,7 +13,9 @@ export async function getRatingsTMDB(showId: string): Promise<RatingsDTO> {
 		const episodes = season.episodes.map(episode => ({
 			episode: episode.episode_number,
 			rating: episode.vote_average,
-			votes: episode.vote_count
+			votes: episode.vote_count,
+			name: episode.name,
+			overview: episode.overview
 		}));
 		return {
 			season: season.season_number,
@@ -83,6 +85,11 @@ interface ShowDetailsWithSeasons extends ShowDetails {
 		episodes: Array<{
 			id: number;
 			episode_number: number;
+			season_number: number;
+			name: string;
+			overview: string;
+			air_date: string;
+			runtime: number;
 			vote_count: number;
 			vote_average: number;
 		}>;

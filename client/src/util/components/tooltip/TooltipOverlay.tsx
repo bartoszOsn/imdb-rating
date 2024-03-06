@@ -17,7 +17,7 @@ export const TooltipOverlay = (props: TooltipOverlayProps) => {
 	}, [props.target]);
 
 	return (
-		<div ref={overlayRef} className="absolute z-tooltip bg-background border border-border p-2 shadow-md"
+		<div ref={overlayRef} className="fixed z-tooltip bg-background border border-border p-2 shadow-md"
 			style={{top: position.top, left: position.left}}
 		>
 			{props.children}

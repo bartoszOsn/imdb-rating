@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { imageTMDBBaseUrl } from '../imageTMDBBaseUrl.ts';
 import { Tooltip } from '../util/components/tooltip/Tooltip.tsx';
+import { EpisodeDetails } from './EpisodeDetails.tsx';
 
 export const TvShowRoute = () => {
 	const { id } = useParams<{ id: string }>();
@@ -102,7 +103,7 @@ const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 								{
 									season.episodes.map((episode) => {
 										return (
-											<Tooltip content={episode.rating}>
+											<Tooltip content={<EpisodeDetails episode={episode} /> }>
 												<Cell scale={normalizeRating(episode.rating)}>
 													{Math.round(episode.rating * 10) / 10}
 												</Cell>
@@ -120,7 +121,7 @@ const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 };
 
 const Cell = (props: { children?: ReactNode, header?: boolean, scale?: number, highest?: boolean }) => {
-	let classNames = 'w-6 h-6 flex items-center justify-center text-xs hover:outline outline-primary outline-2';
+	let classNames = 'w-6 h-6 flex items-center justify-center text-xs hover:outline outline-primary outline-2 cursor-default';
 	if (props.header) {
 		classNames += ` font-bold bg-primary text-background sticky top-0 ${props.highest ? 'z-elevated-plus' : 'z-elevated'}`;
 	}

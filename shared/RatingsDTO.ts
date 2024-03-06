@@ -20,4 +20,6 @@ export interface EpisodeDTO {
 	episode: number;
 	rating: number;
 	votes: number;
+	name: string;
+	overview: string;
 }
