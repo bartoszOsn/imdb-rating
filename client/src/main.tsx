@@ -4,6 +4,7 @@ import App from './App.tsx';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { TvShowRoute } from './ui/TvShowRoute.tsx';
 import './index.css';
+import { HomeRoute } from './ui/HomeRoute.tsx';
 
 const router = createHashRouter([
 	{
@@ -12,7 +13,7 @@ const router = createHashRouter([
 		children: [
 			{
 				path: '/',
-				element: <h1>Home</h1>
+				Component: HomeRoute
 			},
 			{
 				path: '/tv-show/:id',
