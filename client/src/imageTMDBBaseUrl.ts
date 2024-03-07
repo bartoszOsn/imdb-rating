@@ -1,1 +1,1 @@
-export const imageTMDBBaseUrl = 'https://image.tmdb.org/t/p/original'
+export const imageTMDBBaseUrl = 'https://image.tmdb.org/t/p/w342'
