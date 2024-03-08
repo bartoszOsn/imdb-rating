@@ -1,15 +1,16 @@
 import { useParams } from 'react-router-dom';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { RatingsDTO } from '../../../shared/RatingsDTO.ts';
+import { EpisodeDTO, RatingsDTO } from '../../../shared/RatingsDTO.ts';
 import { tvShowRequest } from '../infrastructure/tvShowRequest.ts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { imageTMDBBaseUrl } from '../imageTMDBBaseUrl.ts';
 import { Tooltip } from '../util/components/tooltip/Tooltip.tsx';
 import { EpisodeDetails } from './EpisodeDetails.tsx';
+import { Chart } from '../util/components/chart';
 
 export const TvShowRoute = () => {
-	const { id } = useParams<{ id: string }>();
+	const {id} = useParams<{ id: string }>();
 	const [ratings, setRatings] = useState<RatingsDTO | null>(null);
 
 	useEffect(() => {
@@ -31,8 +32,9 @@ export const TvShowRoute = () => {
 					<p>Loading</p>
 				) : (
 					<>
-						<TvShowDetails ratings={ratings} />
-						<EpisodesTable ratings={ratings} />
+						<TvShowDetails ratings={ratings}/>
+						<EpisodesChart ratings={ratings}/>
+						<EpisodesTable ratings={ratings}/>
 					</>
 				)
 			}
@@ -40,16 +42,16 @@ export const TvShowRoute = () => {
 	);
 }
 
-const TvShowDetails = ({ ratings }: { ratings: RatingsDTO }) => {
+const TvShowDetails = ({ratings}: { ratings: RatingsDTO }) => {
 	return (
-		<div className='flex flex-row gap-4 mb-4'>
-			<img className='w-48' src={`${imageTMDBBaseUrl}${ratings.posterPath}`} />
+		<div className="flex flex-row gap-4 mb-4">
+			<img className="w-48" src={`${imageTMDBBaseUrl}${ratings.posterPath}`}/>
 			<div>
 				<h1>
 					{ratings.name}
-					<span className='text-textSubtle'> ({ratings.year})</span>
+					<span className="text-textSubtle"> ({ratings.year})</span>
 				</h1>
-				<p className='text-textSubtle mb-4'>{ratings.genres.join(', ')}</p>
+				<p className="text-textSubtle mb-4">{ratings.genres.join(', ')}</p>
 				<p>{ratings.overview}</p>
 				<div className="flex flex-row gap-4 mt-4 text-small text-textSubtle">
 					<p className="flex flex-row gap-2 items-center">
@@ -70,12 +72,31 @@ const TvShowDetails = ({ ratings }: { ratings: RatingsDTO }) => {
 	)
 }
 
+const EpisodesChart = ({ratings}: { ratings: RatingsDTO }) => {
+	const allEpisodes: Array<EpisodeDTO & { season: number}> = ratings.seasons
+		.map((season) => season.episodes.map((episode) => ({...episode, season: season.season})))
+		.flatMap((season) => season);
+
+	return (
+		<>
+			<h2 className="mb-2">Episode chart</h2>
+			<Chart nodes={allEpisodes}
+				getValue={(node: EpisodeDTO) => node.rating}
+				getGroup={(node: EpisodeDTO & { season: number}) => node.season.toString()}
+				getTooltip={() => null}
+				className='h-96 w-full fill-blue-200'>
+
+			</Chart>
+		</>
+	)
+}
+
 const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 	const maxEpisodes = useMemo(
 		() => Math.max(...ratings.seasons.map((season) => season.episodes.length)),
 		[ratings]
 	);
-	const episodeNumbers = useMemo(() => Array.from({ length: maxEpisodes }, (_, i) => i + 1), [maxEpisodes]);
+	const episodeNumbers = useMemo(() => Array.from({length: maxEpisodes}, (_, i) => i + 1), [maxEpisodes]);
 
 	const normalizeRating = (rating: number) => {
 		return Math.round(rating);
@@ -85,25 +106,25 @@ const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 
 	return (
 		<>
-			<h2 className='mb-2'>Episode table</h2>
+			<h2 className="mb-2">Episode table</h2>
 			<div className="flex flex-row gap-0.5 justify-center">
 				<div className={columnClasses}>
 					<Cell header={true} highest={true}></Cell>
 					{
 						episodeNumbers.map((episodeNumber) => (
-							<Cell header={true}>{episodeNumber}</Cell>
+							<Cell key={episodeNumber} header={true}>{episodeNumber}</Cell>
 						))
 					}
 				</div>
 				{
 					ratings.seasons.map((season) => {
 						return (
-							<div className={columnClasses}>
+							<div key={season.season} className={columnClasses}>
 								<Cell header={true}>{season.season}</Cell>
 								{
-									season.episodes.map((episode) => {
+									season.episodes.map((episode, index) => {
 										return (
-											<Tooltip content={<EpisodeDetails episode={episode} /> }>
+											<Tooltip key={index} content={<EpisodeDetails episode={episode}/>}>
 												<Cell scale={normalizeRating(episode.rating)}>
 													{Math.round(episode.rating * 10) / 10}
 												</Cell>

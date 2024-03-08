@@ -47,7 +47,9 @@ export default {
 		'./index.html',
 	],
 	theme: {
-		colors,
+		extend: {
+			colors
+		},
 		zIndex: {
 			default: '0',
 			elevated: '10',
