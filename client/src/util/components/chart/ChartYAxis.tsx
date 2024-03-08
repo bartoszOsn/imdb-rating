@@ -1,6 +1,7 @@
 import { inverseLerp } from '../../math/inverseLerp.ts';
 import { lerp } from '../../math/lerp.ts';
 import { GroupHandlesHeight, TopMargin, YAxisWidth } from './layout-constants.ts';
+import { Fragment } from 'react';
 
 export interface ChartYAxisProps {
 	width: number;
@@ -18,9 +19,8 @@ export const ChartYAxis = (props: ChartYAxisProps) => {
 					const yFrag = inverseLerp(props.range[0], props.range[1], line)
 					const y = Math.floor(lerp(props.height - GroupHandlesHeight, TopMargin, yFrag));
 					return (
-						<>
+						<Fragment key={index}>
 							<text
-								key={index}
 								x={0}
 								y={y}
 								className="fill-text"
@@ -28,13 +28,12 @@ export const ChartYAxis = (props: ChartYAxisProps) => {
 								{line}
 							</text>
 							<line
-								key={index}
 								x1={YAxisWidth}
 								y1={y}
 								x2={props.width}
 								y2={y}
 								className="stroke-textSubtle stroke-1 opacity-50 dasharray" />
-						</>
+						</Fragment>
 					)
 				})
 			}

@@ -83,7 +83,7 @@ const EpisodesChart = ({ratings}: { ratings: RatingsDTO }) => {
 			<Chart nodes={allEpisodes}
 				getValue={(node: EpisodeDTO) => node.rating}
 				getGroup={(node: EpisodeDTO & { season: number}) => node.season.toString()}
-				getTooltip={() => null}
+				getTooltip={(episode: EpisodeDTO) => <EpisodeDetails episode={episode}/>}
 				className='h-96 w-full fill-blue-200'>
 
 			</Chart>

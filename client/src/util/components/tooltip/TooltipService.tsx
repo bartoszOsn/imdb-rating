@@ -4,7 +4,7 @@ import { TooltipOverlay } from './TooltipOverlay.tsx';
 export function useCreateTooltipService() {
 	const [tooltipConfig, setTooltipConfig] = useState<TooltipConfig | null>(null);
 
-	const showTooltip = (content: ReactNode, target: HTMLElement) => {
+	const showTooltip = (content: ReactNode, target: HTMLElement | SVGElement) => {
 		setTooltipConfig({
 			content,
 			target
@@ -36,7 +36,7 @@ export function useCreateTooltipService() {
 }
 
 export interface TooltipService {
-	showTooltip(content: ReactNode, target: HTMLElement): void;
+	showTooltip(content: ReactNode, target: HTMLElement | SVGElement): void;
 
 	hideTooltip(): void;
 
@@ -45,5 +45,5 @@ export interface TooltipService {
 
 interface TooltipConfig {
 	content: ReactNode;
-	target: HTMLElement;
+	target: HTMLElement | SVGElement;
 }

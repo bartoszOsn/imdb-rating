@@ -3,7 +3,7 @@ import { TooltipPosition } from './TooltipPosition.ts';
 
 export interface TooltipOverlayProps {
 	children: ReactNode;
-	target: HTMLElement;
+	target: HTMLElement | SVGElement;
 }
 
 const TOOLTIP_OFFSET = 8;
@@ -17,7 +17,7 @@ export const TooltipOverlay = (props: TooltipOverlayProps) => {
 	}, [props.target]);
 
 	return (
-		<div ref={overlayRef} className="fixed z-tooltip bg-background border border-border p-2 shadow-md"
+		<div ref={overlayRef} className="fixed z-tooltip bg-background border border-border p-2 shadow-md pointer-events-none"
 			style={{top: position.top, left: position.left}}
 		>
 			{props.children}
@@ -25,7 +25,7 @@ export const TooltipOverlay = (props: TooltipOverlayProps) => {
 	)
 }
 
-function calculatePosition(target: HTMLElement, overlay: HTMLElement | null): TooltipPosition {
+function calculatePosition(target: HTMLElement | SVGElement, overlay: HTMLElement | null): TooltipPosition {
 	const targetRect = getContentsElementRect(target);
 	const overlayRect = overlay ? overlay.getBoundingClientRect() : new DOMRect(0, 0, 0, 0);
 
@@ -48,12 +48,18 @@ function calculatePosition(target: HTMLElement, overlay: HTMLElement | null): To
 	}
 }
 
-function getContentsElementRect(contentsElement: HTMLElement): DOMRect {
-	const children = contentsElement.children;
-	const minTop = Math.min(...Array.from(children).map((child: Element) => child.getBoundingClientRect().top));
-	const maxBottom = Math.max(...Array.from(children).map((child: Element) => child.getBoundingClientRect().bottom));
-	const minLeft = Math.min(...Array.from(children).map((child: Element) => child.getBoundingClientRect().left));
-	const maxRight = Math.max(...Array.from(children).map((child: Element) => child.getBoundingClientRect().right));
+function getContentsElementRect(contentsElement: HTMLElement | SVGElement): DOMRect {
+	if (getComputedStyle(contentsElement).display === 'contents') {
+		const children = contentsElement.children;
+		const minTop = Math.min(...Array.from(children).map((child: Element) => child.getBoundingClientRect().top));
+		const maxBottom = Math.max(...Array.from(children).map((child: Element) => child.getBoundingClientRect().bottom));
+		const minLeft = Math.min(...Array.from(children).map((child: Element) => child.getBoundingClientRect().left));
+		const maxRight = Math.max(...Array.from(children).map((child: Element) => child.getBoundingClientRect().right));
 
-	return new DOMRect(minLeft, minTop, maxRight - minLeft, maxBottom - minTop);
+		return new DOMRect(minLeft, minTop, maxRight - minLeft, maxBottom - minTop);
+	} else {
+		return contentsElement.getBoundingClientRect();
+	}
+
+
 }
