@@ -20,6 +20,26 @@ export const Chart = <TNode,>(props: ChartProps<TNode>) => {
 	const nodeValues = useMemo(() => nodes.map(getValue), [nodes, getValue]);
 	const nodeGroups = useMemo(() => nodes.map(getGroup), [nodes, getGroup]);
 
+	const range = useMemo(() => {
+		let min = Math.min(...nodeValues);
+		let max = Math.max(...nodeValues);
+
+		const margin = (max - min) * 0.1;
+
+		min -= margin;
+		max += margin;
+
+		if (min < 0) {
+			min = 0;
+		}
+
+		if (max > 10) {
+			max = 10;
+		}
+
+		return [min, max] as [number, number];
+	}, [nodeValues]);
+
 	return (
 		<ResponsiveSvg {...svgProps}>
 			{
@@ -33,12 +53,12 @@ export const Chart = <TNode,>(props: ChartProps<TNode>) => {
 					<ChartYAxis
 						width={width}
 						height={height}
-						range={[6.2, 10]}/>
+						range={range}/>
 					<ChartPoints
 						values={nodeValues}
 						groups={nodeGroups}
 						nodes={props.nodes}
-						range={[6.2, 10]}
+						range={range}
 						width={width}
 						height={height}
 						getColorById={getColorById}

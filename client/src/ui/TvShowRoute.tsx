@@ -33,8 +33,8 @@ export const TvShowRoute = () => {
 				) : (
 					<>
 						<TvShowDetails ratings={ratings}/>
-						<EpisodesChart ratings={ratings}/>
 						<EpisodesTable ratings={ratings}/>
+						<EpisodesChart ratings={ratings}/>
 					</>
 				)
 			}
@@ -107,7 +107,7 @@ const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 	return (
 		<>
 			<h2 className="mb-2">Episode table</h2>
-			<div className="flex flex-row gap-0.5 justify-center">
+			<div className="flex flex-row gap-0.5 justify-center mb-8">
 				<div className={columnClasses}>
 					<Cell header={true} highest={true}></Cell>
 					{
