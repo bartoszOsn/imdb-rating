@@ -1,4 +1,4 @@
-import { GroupHandlesHeight, YAxisWidth } from './layout-constants.ts';
+import { GroupHandlesHeight, TopMargin, YAxisWidth } from './layout-constants.ts';
 import { lerp } from '../../math/lerp.ts';
 import { ChartColor } from './useChartColors.ts';
 import { ReactNode } from 'react';
@@ -21,7 +21,7 @@ export const ChartPoints = <TNodes,>(props: ChartPointsProps<TNodes>) => {
 	const left = YAxisWidth;
 	const right = props.width;
 	const bottom = props.height - GroupHandlesHeight;
-	const top = 0;
+	const top = TopMargin;
 
 	const rangeOfOneNode = Math.max((right - left) / props.values.length, 0);
 	const halfRangeOfOneNode = rangeOfOneNode / 2;

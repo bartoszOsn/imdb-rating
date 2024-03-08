@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react';
 import { ChartColor } from './useChartColors.ts';
-import { GroupHandlesHeight, YAxisWidth } from './layout-constants.ts';
+import { GroupHandlesHeight, TopMargin, YAxisWidth } from './layout-constants.ts';
 
 export interface ChartGroupsProps {
 	width: number;
@@ -21,7 +21,7 @@ export const ChartGroups = ({ width, height, nodeGroups, getColorById }: ChartGr
 					const widthPerNode = actualWidth / nodeGroups.length;
 
 					const x = Math.floor(group.firstNodeIndex * widthPerNode) + YAxisWidth;
-					const y = 0;
+					const y = TopMargin;
 					const w = Math.max(Math.ceil(group.numberOfNodes * widthPerNode), 0);
 					const h = height;
 					const color = getColorById(group.name);
@@ -33,7 +33,7 @@ export const ChartGroups = ({ width, height, nodeGroups, getColorById }: ChartGr
 								y={y}
 								width={w}
 								height={h}
-								className={color.fillSubtleClass}
+								className={color.fillSubtleClass + ' opacity-50'}
 							/>
 							<rect
 								x={x}

@@ -3,6 +3,7 @@ import { ReactNode, SVGProps, useMemo } from 'react';
 import { ChartGroups } from './ChartGroups.tsx';
 import { useChartColors } from './useChartColors.ts';
 import { ChartPoints } from './ChartPoints.tsx';
+import { ChartYAxis } from './ChartYAxis.tsx';
 
 export type ChartProps<TNode> = {
 	nodes: Array<TNode>;
@@ -29,11 +30,15 @@ export const Chart = <TNode,>(props: ChartProps<TNode>) => {
 						nodeGroups={nodeGroups}
 						getColorById={getColorById}>
 					</ChartGroups>
+					<ChartYAxis
+						width={width}
+						height={height}
+						range={[6.2, 10]}/>
 					<ChartPoints
 						values={nodeValues}
 						groups={nodeGroups}
 						nodes={props.nodes}
-						range={[5, 10]}
+						range={[6.2, 10]}
 						width={width}
 						height={height}
 						getColorById={getColorById}
