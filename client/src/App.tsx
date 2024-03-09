@@ -3,6 +3,7 @@ import { SearchShowComponent } from './ui/SearchShowComponent.tsx';
 import { Link, Outlet } from 'react-router-dom';
 import { TooltipProvider } from './util/components/tooltip';
 import { AppHeader } from './util/components/AppHeader.tsx';
+import { Hr } from './util/components/Hr.tsx';
 
 function App() {
   return (
@@ -15,6 +16,13 @@ function App() {
 				<div className='max-w-2xl w-full pt-2'>
 					<Outlet />
 				</div>
+				<Hr className='mb-2 mt-16' />
+				<p className='mb-4 flex items-center gap-2'>
+					<span>Tablesode uses data from</span>
+					<a href='https://www.themoviedb.org/' target='_blank' rel='noreferrer'>
+						<img src='https://www.themoviedb.org/assets/2/v4/logos/v2/blue_long_2-9665a76b1ae401a510ec1e0ca40ddcb3b0cfe45f1d51b77a308fea0845885648.svg' alt='The Movie Database' className='h-3' />
+					</a>
+				</p>
 			</div>
 		</AppLayout>
     </TooltipProvider>
