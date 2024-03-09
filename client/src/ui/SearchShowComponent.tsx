@@ -84,7 +84,7 @@ export const SearchShowComponent = () => {
 	}
 
 	return (
-		<SearchComponent onInput={setSearch}>
+		<SearchComponent onInput={setSearch} placeholder='Search tv show'>
 			{
 				dropdownContent
 			}

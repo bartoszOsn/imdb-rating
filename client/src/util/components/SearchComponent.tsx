@@ -5,6 +5,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 export interface SearchComponentProps {
 	children?: ReactNode;
 	onInput?: (query: string) => void;
+	placeholder?: string;
 }
 
 export const SearchComponent = (props: SearchComponentProps) => {
@@ -25,7 +26,7 @@ export const SearchComponent = (props: SearchComponentProps) => {
 
 	return (
 		<div className={searchContainerClasses}>
-			<input className={searchInputClasses} type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
+			<input className={searchInputClasses} placeholder={props.placeholder} type="text" onInput={onInput} onFocus={onFocus} onBlur={onBlur} />
 			<FontAwesomeIcon className="p-2" icon={faMagnifyingGlass} />
 			{
 				hasFocus && props.children && (
