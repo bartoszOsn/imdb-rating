@@ -14,8 +14,8 @@ export const HomeRoute = () => {
 
 	return (
 		<>
-			<h1 className='mb-2'>Rating Table</h1>
-			<p>Welcome to rating table!</p>
+			<h1 className='mb-2'>Tablesode</h1>
+			<p>Welcome to Tablesode!</p>
 			<p className='mb-4'>search for television show above or choose one of the trending ones.</p>
 			<TrendingShows trending={trending} />
 		</>
