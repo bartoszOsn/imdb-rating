@@ -8,7 +8,7 @@ function App() {
   return (
     <TooltipProvider>
 		<AppLayout>
-			<AppHeader right={<Link to='/'><img src='/wordmark.svg' alt='Tablesode' className='h-8' /></Link> }>
+			<AppHeader left={<Link to='/'><img src='/wordmark.svg' alt='Tablesode' className='h-8' /></Link> }>
 				<SearchShowComponent />
 			</AppHeader>
 			<div className='flex-grow overflow-y-auto w-full flex flex-col items-center -mr-4'>
