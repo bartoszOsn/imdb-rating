@@ -6,6 +6,7 @@ import { searchRequest } from '../infrastructure/searchRequest.ts';
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
+import { Skeleton } from '../util/components/Skeleton.tsx';
 
 
 export const SearchShowComponent = () => {
@@ -56,11 +57,17 @@ export const SearchShowComponent = () => {
 
 	if (search.length > 0) {
 		if (isFetching) {
-			dropdownContent = <div>Fetching...</div>;
+			dropdownContent = (
+				<div className="flex flex-col gap-2 py-2">
+					<SearchItemSkeleton />
+					<SearchItemSkeleton />
+					<SearchItemSkeleton />
+				</div>
+			)
 		} else if (isError) {
 			dropdownContent = <div>Error fetching results</div>;
 		} else {
-			dropdownContent = <div  className="max-h-96 flex flex-col overflow-y-auto py-2">
+			dropdownContent = <div className="max-h-96 flex flex-col overflow-y-auto py-2">
 				{
 					results.map((show) => (
 						<Link
@@ -91,3 +98,13 @@ export const SearchShowComponent = () => {
 		</SearchComponent>
 	)
 }
+
+const SearchItemSkeleton = () => (
+	<div className='flex flex-col gap-1 p-2 pt-1'>
+		<Skeleton className='w-3/4 h-4' />
+		<div className='flex gap-2'>
+			<Skeleton className='w-8 h-2' />
+			<Skeleton className='w-8 h-2' />
+		</div>
+	</div>
+)
