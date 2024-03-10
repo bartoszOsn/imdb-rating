@@ -5,9 +5,11 @@ import { tvShowRequest } from '../infrastructure/tvShowRequest.ts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { imageTMDBBaseUrl } from '../imageTMDBBaseUrl.ts';
-import { Tooltip } from '../util/components/tooltip/Tooltip.tsx';
+import { Tooltip } from '../util/components/tooltip';
 import { EpisodeDetails } from './EpisodeDetails.tsx';
 import { Chart } from '../util/components/chart';
+import { Skeleton } from '../util/components/Skeleton.tsx';
+import { generateNodes } from '../util/generateNodes.ts';
 
 export const TvShowRoute = () => {
 	const {id} = useParams<{ id: string }>();
@@ -29,7 +31,7 @@ export const TvShowRoute = () => {
 		<div>
 			{
 				!ratings ? (
-					<p>Loading</p>
+					<TVShowSkeleton />
 				) : (
 					<>
 						<TvShowDetails ratings={ratings}/>
@@ -177,4 +179,42 @@ function getColorClass(rating: number): string {
 		return 'bg-backgroundDark';
 	}
 	return classes[rating as keyof typeof classes];
+}
+
+const TVShowSkeleton = () => {
+	const tableCols = [
+		10, 6, 7, 4, 8, 2, 5, 3, 9, 10, 1, 4, 5
+	];
+
+	return (
+		<>
+			<div className="flex flex-row gap-4 mb-4">
+				<Skeleton className="w-48 h-72"/>
+				<div className="flex-grow flex flex-col gap-2">
+					<Skeleton className="w-64 h-8"/>
+					<Skeleton className="w-72 h-4 mb-2"/>
+					<Skeleton className="w-full h-32"/>
+					<div className="flex flex-row gap-2">
+						<Skeleton className="w-16 h-3"/>
+						<Skeleton className="w-12 h-3"/>
+						<Skeleton className="w-24 h-3"/>
+						<Skeleton className="w-16 h-3"/>
+					</div>
+				</div>
+			</div>
+			<div className="flex flex-row gap-0.5 justify-center">
+				{
+					tableCols.map((cells) => (
+						<div className="flex flex-col gap-0.5">
+							{
+								generateNodes(cells, (i) => (
+									<Skeleton key={i} className="w-6 h-6"/>
+								))
+							}
+						</div>
+					))
+				}
+			</div>
+		</>
+	);
 }
