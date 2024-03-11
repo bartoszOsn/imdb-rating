@@ -10,6 +10,8 @@ import { EpisodeDetails } from './EpisodeDetails.tsx';
 import { Chart } from '../util/components/chart';
 import { Skeleton } from '../util/components/Skeleton.tsx';
 import { generateNodes } from '../util/generateNodes.ts';
+import { Toggle } from '../util/components/Toggle.tsx';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 export const TvShowRoute = () => {
 	const {id} = useParams<{ id: string }>();
@@ -94,13 +96,29 @@ const EpisodesChart = ({ratings}: { ratings: RatingsDTO }) => {
 }
 
 const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
+	const [normalize, setNormalize] = useState(false);
+
 	const maxEpisodes = useMemo(
 		() => Math.max(...ratings.seasons.map((season) => season.episodes.length)),
 		[ratings]
 	);
 	const episodeNumbers = useMemo(() => Array.from({length: maxEpisodes}, (_, i) => i + 1), [maxEpisodes]);
 
+	const maxRating = useMemo(
+		() => Math.max(...ratings.seasons.flatMap((season) => season.episodes.map((episode) => episode.rating))),
+		[ratings]
+	);
+
+	const minRating = useMemo(
+		() => Math.min(...ratings.seasons.flatMap((season) => season.episodes.map((episode) => episode.rating))),
+		[ratings]
+	);
+
 	const normalizeRating = (rating: number) => {
+		if (normalize) {
+			return Math.round((rating - minRating) / (maxRating - minRating) * 10);
+		}
+
 		return Math.round(rating);
 	}
 
@@ -109,6 +127,12 @@ const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 	return (
 		<>
 			<h2 className="mb-2">Episode table</h2>
+			<Toggle value={normalize} onChange={setNormalize} className='mb-2'>
+				<span>Normalize </span>
+				<Tooltip content={<div className='max-w-64'>When enabled, the episode with the highest rating will be show as green and the lowest as red. When disabled, the colors are shown on the scale from 0 to 10.</div>}>
+					<FontAwesomeIcon icon={faQuestionCircle} className="text-textSubtle"/>
+				</Tooltip>
+			</Toggle>
 			<div className="flex flex-row gap-0.5 justify-center mb-8">
 				<div className={columnClasses}>
 					<Cell header={true} highest={true}></Cell>

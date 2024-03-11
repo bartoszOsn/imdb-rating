@@ -8,7 +8,7 @@ export async function searchTMDB(query: string): Promise<SearchShowResultDTO> {
 				id: show.id.toString(),
 				name: show.name,
 				startYear: new Date(show.first_air_date).getFullYear(),
-				rating: show.vote_average, // TODO: Get the actual rating
+				rating: show.vote_average,
 			}));
 			return { shows: tvShows };
 		});
