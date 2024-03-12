@@ -7,4 +7,6 @@ export interface TvShowDTO {
 	name: string;
 	startYear: number;
 	rating: number;
+	overview: string;
+	posterPath: string;
 }

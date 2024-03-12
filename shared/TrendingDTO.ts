@@ -1,10 +1,5 @@
-export interface TrendingDTO {
-	results: Array<TrendingShowDTO>
-}
+import { TvShowDTO } from './SearchShowResultDTO';
 
-export interface TrendingShowDTO {
-	id: number;
-	name: string;
-	overview: string;
-	posterPath: string;
+export interface TrendingDTO {
+	results: Array<TvShowDTO>
 }

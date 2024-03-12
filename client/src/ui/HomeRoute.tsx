@@ -1,11 +1,12 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { TrendingDTO, TrendingShowDTO } from '../../../shared/TrendingDTO.ts';
+import { TrendingDTO } from '../../../shared/TrendingDTO.ts';
 import { trendingRequest } from '../infrastructure/trendingRequest.ts';
 import { Link } from 'react-router-dom';
 import { imageTMDBBaseUrl } from '../imageTMDBBaseUrl.ts';
 import { Tooltip } from '../util/components/tooltip';
 import { generateNodes } from '../util/generateNodes.ts';
 import { Skeleton } from '../util/components/Skeleton.tsx';
+import { TvShowDTO } from '../../../shared/SearchShowResultDTO.ts';
 
 export const HomeRoute = () => {
 	const [trending, setTrending] = useState<TrendingDTO | null>(null);
@@ -58,7 +59,7 @@ const TrendingShows = ({ trending }: { trending: TrendingDTO | null }) => {
 	)
 }
 
-const TrengingShowDetails = ({ show }: { show: TrendingShowDTO }) => {
+const TrengingShowDetails = ({ show }: { show: TvShowDTO }) => {
 	return (
 		<div className='max-w-96'>
 			<h3>{show.name}</h3>
