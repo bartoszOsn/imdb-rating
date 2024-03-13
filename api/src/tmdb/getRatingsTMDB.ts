@@ -10,7 +10,13 @@ export async function getRatingsTMDB(showId: string): Promise<RatingsDTO> {
 	const showDetailsWithSeasons = await tmdb.tvShowDetailsWithSeasons(showId, seasonNumbers);
 	const seasons: Array<TmdbSeasonDTO> = seasonNumbers.map(seasonNumber => showDetailsWithSeasons[`season/${seasonNumber}`]);
 
-	const ratings: Array<SeasonDTO> = seasons.map(tmdbSeasonDTOToSeasonDTO);
+	const ratings: Array<SeasonDTO> = seasons
+		.map(season => ({
+			...season,
+			episodes: season.episodes.filter(episode => episode.season_number !== 0)
+		}))
+		.filter(season => season.episodes.length > 0)
+		.map(tmdbSeasonDTOToSeasonDTO);
 
 	return {
 		seasons: ratings,
