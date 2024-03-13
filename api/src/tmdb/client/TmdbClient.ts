@@ -4,8 +4,6 @@ import { TmdbTrendingDTO } from './tmdb-dto/TmdbTrendingDTO';
 import { TmdbShowDetailsDTO } from './tmdb-dto/TmdbShowDetailsDTO';
 import { TmdbShowDetailsWithSeasonsDTO } from './tmdb-dto/TmdbShowDetailsWithSeasonsDTO';
 import { chunkArray } from '../../util/chunkArray';
-import { TmdbShowDetailsWithEpisodeGroupsDTO } from './tmdb-dto/TmdbShowDetailsWithEpisodeGroupsDTO';
-import { TmdbEpisodeGroupDetailsDTO } from './tmdb-dto/TmdbEpisodeGroupDetailsDTO';
 
 export class TmdbClient {
 	constructor(private readonly apiKey: string) {}
@@ -20,10 +18,6 @@ export class TmdbClient {
 
 	tvShowDetails(showId: string): Promise<TmdbShowDetailsDTO> {
 		return this.fetch<TmdbShowDetailsDTO>(`/tv/${showId}`);
-	}
-
-	tvShowDetailsWithEpisodeGroups(showId: string): Promise<TmdbShowDetailsWithEpisodeGroupsDTO> {
-		return this.fetch<TmdbShowDetailsWithEpisodeGroupsDTO>(`/tv/${showId}?append_to_response=episode_groups`);
 	}
 
 	async tvShowDetailsWithSeasons(showId: string, seasonNumbers: Array<number>): Promise<TmdbShowDetailsWithSeasonsDTO> {
@@ -41,10 +35,6 @@ export class TmdbClient {
 		}
 
 		return result;
-	}
-
-	episodeGroupDetails(episodeGroupId: string): Promise<TmdbEpisodeGroupDetailsDTO> {
-		return this.fetch<TmdbEpisodeGroupDetailsDTO>(`/tv/episode_group/${episodeGroupId}`);
 	}
 
 	private async fetch<TResponse>(endpoint: TmdbUrl): Promise<TResponse> {

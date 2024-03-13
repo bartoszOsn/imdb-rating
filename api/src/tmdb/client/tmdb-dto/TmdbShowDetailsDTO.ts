@@ -7,7 +7,6 @@ export interface TmdbShowDetailsDTO {
 		name: string;
 	}>;
 	name: string;
-	id: number;
 	overview: string;
 	vote_average: number;
 	poster_path: string;
