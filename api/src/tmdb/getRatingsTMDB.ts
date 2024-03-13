@@ -12,9 +12,7 @@ export async function getRatingsTMDB(showId: string): Promise<RatingsDTO> {
 		? await getEpisodesTMDBFromGroups(showDetails)
 		: await getEpisodesTMDBFromSeasons(showDetails);
 
-	const seasons = episodeArrayToSeasons(
-		episodes
-	);
+	const seasons = episodeArrayToSeasons(episodes);
 
 	return createRatingsDTO(showDetails, seasons);
 }
@@ -66,17 +64,7 @@ function episodeArrayToSeasons(episodes: Array<EpisodeDTO>): Array<SeasonDTO> {
 		}
 	}
 
-	const mergedSeasons = [seasons.shift()!];
-	for (const season of seasons) {
-		const lastMergedSeason = mergedSeasons[mergedSeasons.length - 1];
-		if (season.season === lastMergedSeason.season) {
-			lastMergedSeason.episodes = [...lastMergedSeason.episodes, ...season.episodes];
-		} else {
-			mergedSeasons.push(season);
-		}
-	}
-
-	return mergedSeasons;
+	return seasons;
 }
 
 function createRatingsDTO(showDetails: TmdbShowDetailsDTO, ratings: Array<SeasonDTO>): RatingsDTO {
