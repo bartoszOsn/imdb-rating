@@ -98,12 +98,6 @@ const EpisodesChart = ({ratings}: { ratings: RatingsDTO }) => {
 const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 	const [normalize, setNormalize] = useState(false);
 
-	const maxEpisodes = useMemo(
-		() => Math.max(...ratings.seasons.map((season) => season.episodes.length)),
-		[ratings]
-	);
-	const episodeNumbers = useMemo(() => Array.from({length: maxEpisodes}, (_, i) => i + 1), [maxEpisodes]);
-
 	const maxRating = useMemo(
 		() => Math.max(...ratings.seasons.flatMap((season) => season.episodes.map((episode) => episode.rating))),
 		[ratings]
