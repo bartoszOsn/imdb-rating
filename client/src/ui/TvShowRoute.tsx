@@ -134,14 +134,6 @@ const EpisodesTable = ({ratings}: { ratings: RatingsDTO }) => {
 				</Tooltip>
 			</Toggle>
 			<div className="flex flex-row gap-0.5 justify-center mb-8">
-				<div className={columnClasses}>
-					<Cell header={true} highest={true}></Cell>
-					{
-						episodeNumbers.map((episodeNumber) => (
-							<Cell key={episodeNumber} header={true}>{episodeNumber}</Cell>
-						))
-					}
-				</div>
 				{
 					ratings.seasons.map((season) => {
 						return (
