@@ -18,15 +18,12 @@ export async function getRatingsTMDB(showId: string): Promise<RatingsDTO> {
 }
 
 async function getEpisodesTMDBFromGroups(showDetails: TmdbShowDetailsWithEpisodeGroupsDTO): Promise<Array<EpisodeDTO>> {
-	const group = showDetails.episode_groups.results
-		.sort((a, b) => b.episode_count - a.episode_count)[0];
+	const group = showDetails.episode_groups.results.sort((a, b) => a.type - b.type)[0];
 
 	const episodeGroupDetails = await tmdb.episodeGroupDetails(group.id);
 	const episodes = episodeGroupDetails.groups.flatMap(group => group.episodes);
 
-	return episodes
-		.sort((a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime())
-		.map(tmdbEpisodeDTOToEpisodeDTO);
+	return episodes.map(tmdbEpisodeDTOToEpisodeDTO);
 }
 
 async function getEpisodesTMDBFromSeasons(showDetails: TmdbShowDetailsDTO): Promise<Array<EpisodeDTO>> {
