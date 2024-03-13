@@ -7,6 +7,7 @@ export function tmdbEpisodeDTOToEpisodeDTO(tmdbDto: TmdbEpisodeDTO): EpisodeDTO 
 		rating: tmdbDto.vote_average,
 		votes: tmdbDto.vote_count,
 		name: tmdbDto.name,
-		overview: tmdbDto.overview
+		overview: tmdbDto.overview,
+		season_number: tmdbDto.season_number
 	}
 }
