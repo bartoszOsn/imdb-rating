@@ -7,7 +7,7 @@ export const EpisodeDetails = ({ episode }: { episode: EpisodeDTO }) => {
 		<div className='max-w-96'>
 			<h3 className='mb-2 text-medium'>{episode.name}</h3>
 			<p className='mb-2 text-small'>{episode.overview}</p>
-			<p className='text-textSubtle text-small'><FontAwesomeIcon icon={faStar} />: {episode.rating}, season {episode.season_number}, episode {episode.episode}</p>
+			<p className='text-textSubtle text-small'><FontAwesomeIcon icon={faStar} />: {episode.rating}</p>
 		</div>
 	)
 }
