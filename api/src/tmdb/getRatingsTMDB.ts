@@ -53,7 +53,7 @@ function episodeArrayToSeasons(episodes: Array<EpisodeDTO>): Array<SeasonDTO> {
 
 	for (const episode of episodes) {
 		const lastFromCurrentEpisodes = currentEpisodes[currentEpisodes.length - 1];
-		if (episode.season_number === lastFromCurrentEpisodes.season_number) {
+		if (episode.season_number === lastFromCurrentEpisodes.season_number || lastFromCurrentEpisodes.season_number === 0) {
 			currentEpisodes.push(episode);
 		} else {
 			seasons.push({
