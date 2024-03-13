@@ -1,67 +1,58 @@
-import { EpisodeDTO, RatingsDTO, SeasonDTO } from '../../../shared/RatingsDTO';
+import { RatingsDTO, SeasonDTO } from '../../../shared/RatingsDTO';
 import { tmdb } from './tmdb';
 import { TmdbSeasonDTO } from './client/tmdb-dto/TmdbSeasonDTO';
+import { tmdbSeasonDTOToSeasonDTO } from './converters/tmdbSeasonDTOToSeasonDTO';
 import { TmdbShowDetailsDTO } from './client/tmdb-dto/TmdbShowDetailsDTO';
 import { TmdbShowDetailsWithEpisodeGroupsDTO } from './client/tmdb-dto/TmdbShowDetailsWithEpisodeGroupsDTO';
+import { TmdbEpisodeDTO } from './client/tmdb-dto/TmdbEpisodeDTO';
 import { tmdbEpisodeDTOToEpisodeDTO } from './converters/tmdbEpisodeDTOToEpisodeDTO';
 
 export async function getRatingsTMDB(showId: string): Promise<RatingsDTO> {
 	const showDetails = await tmdb.tvShowDetailsWithEpisodeGroups(showId);
 
-	const episodes = showDetails.episode_groups.results.length > 0
-		? await getEpisodesTMDBFromGroups(showDetails)
-		: await getEpisodesTMDBFromSeasons(showDetails);
-
-	const seasons = episodeArrayToSeasons(episodes);
-
-	return createRatingsDTO(showDetails, seasons);
+	if (showDetails.episode_groups.results.length > 0) {
+		return getRatingsTMDBFromGroups(showDetails);
+	} else {
+		return getRatingsTMDBFromSeasons(showDetails);
+	}
 }
 
-async function getEpisodesTMDBFromGroups(showDetails: TmdbShowDetailsWithEpisodeGroupsDTO): Promise<Array<EpisodeDTO>> {
+async function getRatingsTMDBFromGroups(showDetails: TmdbShowDetailsWithEpisodeGroupsDTO): Promise<RatingsDTO> {
 	const group = showDetails.episode_groups.results.sort((a, b) => a.type - b.type)[0];
 
 	const episodeGroupDetails = await tmdb.episodeGroupDetails(group.id);
 	const episodes = episodeGroupDetails.groups.flatMap(group => group.episodes);
 
-	return episodes.map(tmdbEpisodeDTOToEpisodeDTO);
+	const episodeToSeasonMap = new Map<number, Array<TmdbEpisodeDTO>>();
+
+	for (const episode of episodes) {
+		const seasonNumber = episode.season_number;
+		const season = episodeToSeasonMap.get(seasonNumber) || [];
+		season.push(episode);
+		episodeToSeasonMap.set(seasonNumber, season);
+	}
+
+	const ratings: Array<SeasonDTO> = [...episodeToSeasonMap.entries()]
+		.map(seasonEntry => {
+			const [season, episodes] = seasonEntry;
+			return {
+				season,
+				episodes: episodes.map(tmdbEpisodeDTOToEpisodeDTO)
+			};
+		});
+
+	return createRatingsDTO(showDetails, ratings);
 }
 
-async function getEpisodesTMDBFromSeasons(showDetails: TmdbShowDetailsDTO): Promise<Array<EpisodeDTO>> {
+async function getRatingsTMDBFromSeasons(showDetails: TmdbShowDetailsDTO): Promise<RatingsDTO> {
 	const seasonNumbers = showDetails.seasons.map(season => season.season_number);
 
 	const showDetailsWithSeasons = await tmdb.tvShowDetailsWithSeasons(showDetails.id.toString(), seasonNumbers);
 	const seasons: Array<TmdbSeasonDTO> = seasonNumbers.map(seasonNumber => showDetailsWithSeasons[`season/${seasonNumber}`]);
 
-	return seasons
-		.flatMap(season => season.episodes)
-		.sort((a, b) => new Date(a.air_date).getTime() - new Date(b.air_date).getTime())
-		.map(tmdbEpisodeDTOToEpisodeDTO);
-}
+	const ratings: Array<SeasonDTO> = seasons.map(tmdbSeasonDTOToSeasonDTO);
 
-function episodeArrayToSeasons(episodes: Array<EpisodeDTO>): Array<SeasonDTO> {
-	if (episodes.length === 0) {
-		return [];
-	}
-
-	const seasons: Array<SeasonDTO> = [];
-
-	const fistEpisode = episodes.shift()!;
-	let currentEpisodes: Array<EpisodeDTO> = [fistEpisode];
-
-	for (const episode of episodes) {
-		const lastFromCurrentEpisodes = currentEpisodes[currentEpisodes.length - 1];
-		if (episode.season_number === lastFromCurrentEpisodes.season_number) {
-			currentEpisodes.push(episode);
-		} else {
-			seasons.push({
-				season: lastFromCurrentEpisodes.season_number,
-				episodes: currentEpisodes
-			});
-			currentEpisodes = [episode];
-		}
-	}
-
-	return seasons;
+	return createRatingsDTO(showDetails, ratings);
 }
 
 function createRatingsDTO(showDetails: TmdbShowDetailsDTO, ratings: Array<SeasonDTO>): RatingsDTO {

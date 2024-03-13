@@ -22,5 +22,4 @@ export interface EpisodeDTO {
 	votes: number;
 	name: string;
 	overview: string;
-	season_number: number;
 }
